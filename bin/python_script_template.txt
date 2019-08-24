@@ -1,0 +1,52 @@
+import numpy as np
+import csv
+import sys
+#from tkinter import filedialog
+sys.path.append("./")
+from hapi import *
+# パラメータを指定してください
+# ------ ここから ------
+
+name = NAME
+
+# 数字は、HITRAN のウェブサイトの Select Molecules ページでの ID です
+moleculeID = MOLECULES_ID
+# 数字は、HITRAN のウェブサイトの Select Isotopologues ページでの ID です
+isotopologueID = ISOTROPIC_ID
+
+# スペクトルの範囲を指定してください
+spectrum_begin = SPECTRUM_BEGIN
+spectrum_end = SPECTRUM_END
+
+# ------ ここまで ------
+
+db_begin('hitran_data')
+
+# データを取得します。マニュアルを参照すると詳細に設定できます
+fetch(name, moleculeID, isotopologueID, spectrum_begin, spectrum_end)
+
+# HITRAN からダウンロードしたデータから、指定された波長の領域だけを抽出した
+# テーブル tmp を作成
+Cond =('BETWEEN','nu',spectrum_begin,spectrum_end)
+select(name,Conditions=Cond,DestinationTableName='tmp')
+
+# テーブル tmp からデータを取得
+data = getColumns('tmp', ['nu', 'sw','global_upper_quanta', 'global_lower_quanta', 'local_upper_quanta', 'local_lower_quanta'])
+
+data = np.array(data).T # 転置
+
+file_name = str(name) + '_from_' + str(spectrum_begin) + '_to_'\
+              + str(spectrum_end) + '.csv'
+
+field_names = ['1/CM', 'Line_intensity','global upper quanta', 'global lower quanta', 'local upper quanta', 'local lower quanta']
+
+#root = tkinter.Tk()
+#root.filename =  filedialog.asksaveasfilename(initialdir = "/",title = "Save as",filetypes =  [("csv file","*.csv")])
+
+with open(file_name, 'w') as f:
+  writer = csv.writer(f, lineterminator='\n') # , delimiter = '\t' # .tsv (タブ区切り用)
+  writer.writerow(field_names)
+  writer.writerows(data)
+
+#select('tmp', ParameterNames=('nu','sw','global_upper_quanta',
+#       'global_lower_quanta','local_upper_quanta','local_lower_quanta'), File=file_name)
