@@ -1,4 +1,4 @@
-# About emptyExample
+# About this program
 
 ![Screenshot of this](example.png)
 
