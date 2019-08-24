@@ -104,9 +104,9 @@ void ofApp::draw(){
                        "and quantum number changes. When using this program, please connect to the Internet.", 100, 120);
 
    ofSetColor(255, 255, 255);
-   description1.draw(600, 180, 200, 200);
-   description2.draw(830, 180, 200, 200);
-   description3.draw(100, 350, 560, 450);
+   //description1.draw(600, 180, 200, 200);
+   //description2.draw(830, 180, 200, 200);
+   //description3.draw(100, 350, 560, 450);
 }
 
 //--------------------------------------------------------------
